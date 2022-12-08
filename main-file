@@ -1,0 +1,166 @@
+hang = [
+  """
+H A N G M A N
+
+   +---+
+   |   |
+       |
+       |
+       |
+       |
+=========""", """
+H A N G M A N
+
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+=========""", """
+H A N G M A N
+
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+=========""", """
+H A N G M A N
+
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+=========""", """
+H A N G M A N
+
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+=========""", """
+H A N G M A N
+
+  +---+
+  |   |
+  O   |
+ /|\  |
+ /    |
+      |
+=========""", """
+H A N G M A N
+
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+========="""
+]
+
+answer = input(
+  """Would you like to recieve this message in french? Please answer 'yes' or 'no'
+
+""")
+
+import sys, time
+
+
+def delprint(text, delay_time):
+  for character in text:
+    sys.stdout.write(character)
+    sys.stdout.flush()
+    time.sleep(delay_time)
+
+
+if answer.lower() == 'no':
+  delprint(
+    """
+  Sorry! An error has occured.. You will be recieving this message in French...""",
+    .05)
+
+delprint(
+  """
+This message will be presented to you through the form of a game, specifically HANGMAN!
+
+You will be given a phrase to guess, which is from the creator of this game, to you. Spaces, apostrophes, and commas are options to include or use.""",
+  .05)
+
+secretWord = "je t'aime bien, plus que de amis"
+missedLetters = ''
+correctLetters = ''
+
+
+def displayBoard(hang, missedLetters, correctLetters, secretWord):
+  print(hang[len(missedLetters)])
+  print()
+
+  print('Missed Letters:', end=' ')
+  for letter in missedLetters:
+    print(letter, end=' ')
+  print("\n")
+
+  blanks = '_' * len(secretWord)
+
+  for i in range(
+      len(secretWord)):  # replace blanks with correctly guessed letters
+    if secretWord[i] in correctLetters:
+      blanks = blanks[:i] + secretWord[i] + blanks[i + 1:]
+
+  for letter in blanks:  # show the secret word with spaces in between each letter
+    print(letter, end=' ')
+  print("\n")
+
+
+def getGuess(alreadyGuessed):
+  while True:
+    guess = input('Guess a letter: ')
+    guess = guess.lower()
+    if len(guess) != 1:
+      print('Please enter a single letter.')
+    elif guess in alreadyGuessed:
+      print('You have already guessed that letter. Choose again.')
+    elif guess not in "abcdefghijklmnopqrstuvwxyz ,'":
+      print('Please enter a LETTER.')
+    else:
+      return guess
+
+
+while True:
+  displayBoard(hang, missedLetters, correctLetters, secretWord)
+
+  guess = getGuess(missedLetters + correctLetters)
+
+  if guess in secretWord:
+    correctLetters = correctLetters + guess
+
+    foundAllLetters = True
+    for i in range(len(secretWord)):
+      if secretWord[i] not in correctLetters:
+        foundAllLetters = False
+        break
+    if foundAllLetters:
+      print('\nYes! The secret word is "' + secretWord + '"! You have won!')
+      print(
+        "from me: hi person. if i somehow google translated the message wrong, sorry lmao. if you can't figure out what i meant just lmk."
+      )
+      quit()
+  else:
+    missedLetters = missedLetters + guess
+
+    if len(missedLetters) == len(hang) - 1:
+      displayBoard(hang, missedLetters, correctLetters, secretWord)
+      print('You have run out of guesses!\nAfter ' + str(len(missedLetters)) +
+            ' missed guesses and ' + str(len(correctLetters)) +
+            ' correct guesses, the word was "' + secretWord + '"')
+      print(
+        "from me: hi person. if i somehow google translated the message wrong, sorry lmao. if you can't figure out what i meant just lmk."
+      )
+      quit()
